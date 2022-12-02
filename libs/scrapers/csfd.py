@@ -25,7 +25,7 @@ class CsfdScraper:
     @classmethod
     def get_top_movie_links(cls, count: int) -> List[str]:
         """
-        Returns movies from CSFD top movies page along with actors who played there.
+        Returns links to CSFD top movies.
 
         We can find out the links by looking for class 'film-title-name' and then using its href to redirect
         :param: count integer value up to cls.MAX_SIZE
