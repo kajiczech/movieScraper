@@ -5,7 +5,7 @@
     <title>Search your movie!</title>
 </head>
 <body>
-<form action={% url 'movies:search' None %} method="post">
+<form action={% url 'movies:search-landing' %} method="post">
     {% csrf_token %}
     {{ form }}
     <input type="submit" value="Submit">

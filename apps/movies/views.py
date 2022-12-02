@@ -16,7 +16,7 @@ class SearchFormView(FormView):
     form_class = SearchForm
 
     def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+        context = super().get_context_data(**kwargs)
         if self.search:
             context['movies'] = Movie.objects.filter(unicode_name__contains=unidecode(self.search).lower())
             context['actors'] = Actor.objects.filter(unicode_name__contains=unidecode(self.search).lower())

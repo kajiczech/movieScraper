@@ -35,6 +35,15 @@ class SearchFormViewTest(SetupMixin, TestCase):
         response = self.client.get(reverse('movies:search', kwargs={'search': 'non-existent'}))
         self.assertEqual(response.status_code, 200)
 
+    def test_form(self):
+        response = self.client.post(reverse('movies:search-landing'), data={"search": 'óřď'}, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, self.movie1.name)
+        self.assertContains(response, self.movie2.name)
+        self.assertNotContains(response, self.movie3.name)
+        self.assertContains(response, self.actor1.name)
+        self.assertNotContains(response, self.actor2.name)
+
 
 class MovieViewTest(SetupMixin, TestCase):
 
