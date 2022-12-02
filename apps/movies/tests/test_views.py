@@ -7,9 +7,9 @@ from apps.movies.models import Movie, Actor
 # This should be done using some fixture or recipe...
 class SetupMixin:
     def setUp(self):
-        self.movie1 = Movie.objects.create(name='LORD of the rings', unicode_name='lord of the rings')
-        self.movie2 = Movie.objects.create(name='Input OŘD', unicode_name='input ord')
-        self.movie3 = Movie.objects.create(name='Matrix revolutions', unicode_name='matrix revolutions')
+        self.movie1 = Movie.objects.create(name='LORD of the rings', unicode_name='lord of the rings', year=2022)
+        self.movie2 = Movie.objects.create(name='Input OŘD', unicode_name='input ord', year=2022)
+        self.movie3 = Movie.objects.create(name='Matrix revolutions', unicode_name='matrix revolutions', year=2022)
         self.actor1 = Actor.objects.create(name='LórdDicaprio', unicode_name='lorddicaprio')
         self.actor2 = Actor.objects.create(name='Karel Čech', unicode_name='karel cech')
         self.actor3 = Actor.objects.create(name='No Name', unicode_name='no name')

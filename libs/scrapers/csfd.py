@@ -12,15 +12,21 @@ BROWSER_LIKE_HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10
 @dataclasses.dataclass
 class MovieData:
     name: str
+    year: int
     actors: List[str]  # Can be extended to another author model
 
 
 class CsfdScraper:
-    movie_list_url = 'https://www.csfd.cz/zebricky/filmy/nejlepsi/?showMore={page}'
+    movie_list_url = 'https://www.csfd.cz/zebricky/filmy/nejlepsi/?from={page}'
     movie_link_prefix = 'https://www.csfd.cz'
     page_size = 100
     actor_header_text = "Hrají: "
     MAX_SIZE = 1000  # There are only 1000 top films on csfd now
+    movie_link_class = "film-title-name"
+    movie_year_class = "origin"
+
+    class EmptyPageError(Exception):
+        pass
 
     @classmethod
     def get_top_movie_links(cls, count: int) -> List[str]:
@@ -35,16 +41,21 @@ class CsfdScraper:
         movie_urls = []
         page = 0
 
-        # To speed things up, we could run this in parallel
         while len(movie_urls) < count:
             response = requests.get(cls.movie_list_url.format(page=page), headers=BROWSER_LIKE_HEADERS)
+            response.raise_for_status()
 
             list_soup = BeautifulSoup(response.text, 'html.parser')
-            movies = list_soup.find_all('a', attrs={"class": "film-title-name"})
+            movies = list_soup.find_all('a', attrs={"class": cls.movie_link_class})
+
+            if not movies:
+                raise cls.EmptyPageError
+
             for movie_link in movies:
                 movie_urls.append(cls.movie_link_prefix + movie_link.get('href'))
                 if len(movie_urls) >= count:
                     break
+
             page += cls.page_size
 
         return movie_urls
@@ -56,4 +67,5 @@ class CsfdScraper:
         acting_element = movie_soup.find('h4', string=cls.actor_header_text).parent
         name = movie_soup.find('h1').text.strip()
         actor_names = [actor.text for actor in acting_element.find_all('a', recursive=False)]
-        return MovieData(name, actors=actor_names)
+        year = int(movie_soup.find('div', attrs={"class": cls.movie_year_class}).find('span').text.replace(', ', ''))
+        return MovieData(name=name, year=year, actors=actor_names)
