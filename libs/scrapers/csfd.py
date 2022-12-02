@@ -17,40 +17,43 @@ class MovieData:
 
 class CsfdScraper:
     movie_list_url = 'https://www.csfd.cz/zebricky/filmy/nejlepsi/?showMore={page}'
-    movie_link_pre = 'https://www.csfd.cz/'
+    movie_link_prefix = 'https://www.csfd.cz'
     page_size = 100
+    actor_header_text = "Hrají: "
+    MAX_SIZE = 1000  # There are only 1000 top films on csfd now
 
     @classmethod
-    def get_top_movies(cls, count: int) -> List[MovieData]:
+    def get_top_movie_links(cls, count: int) -> List[str]:
         """
         Returns movies from CSFD top movies page along with actors who played there.
 
         We can find out the links by looking for class 'film-title-name' and then using its href to redirect
+        :param: count integer value up to cls.MAX_SIZE
         """
-        movie_models = []
+        assert count <= cls.MAX_SIZE, f"Count can be only up to {cls.MAX_SIZE}"
+
+        movie_urls = []
         page = 0
 
         # To speed things up, we could run this in parallel
-        while len(movie_models) < count:
+        while len(movie_urls) < count:
             response = requests.get(cls.movie_list_url.format(page=page), headers=BROWSER_LIKE_HEADERS)
 
             list_soup = BeautifulSoup(response.text, 'html.parser')
             movies = list_soup.find_all('a', attrs={"class": "film-title-name"})
             for movie_link in movies:
-                movie_data = cls.get_movie_data(cls.movie_link_pre + movie_link.get('href'))
-                movie_models.append(movie_data)
-                if len(movie_models) >= count:
+                movie_urls.append(cls.movie_link_prefix + movie_link.get('href'))
+                if len(movie_urls) >= count:
                     break
             page += cls.page_size
 
-        return movie_models
-
+        return movie_urls
 
     @classmethod
     def get_movie_data(cls, link: str) -> MovieData:
         movie_page_response = requests.get(link, headers=BROWSER_LIKE_HEADERS)
         movie_soup = BeautifulSoup(movie_page_response.text, 'html.parser')
-        acting_element = movie_soup.find('h4', string="Hrají: ").parent
+        acting_element = movie_soup.find('h4', string=cls.actor_header_text).parent
         name = movie_soup.find('h1').text.strip()
         actor_names = [actor.text for actor in acting_element.find_all('a', recursive=False)]
         return MovieData(name, actors=actor_names)

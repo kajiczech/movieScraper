@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import View
 from django.views.generic import DetailView
+from text_unidecode import unidecode
 
 from apps.movies.forms import SearchForm
 from django.views.generic.edit import FormView
@@ -17,8 +18,8 @@ class SearchFormView(FormView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         if self.search:
-            context['movies'] = Movie.objects.filter(name__icontains=self.search)
-            context['actors'] = Actor.objects.filter(name__icontains=self.search)
+            context['movies'] = Movie.objects.filter(unicode_name__contains=unidecode(self.search).lower())
+            context['actors'] = Actor.objects.filter(unicode_name__contains=unidecode(self.search).lower())
             context['search'] = self.search
         return context
 

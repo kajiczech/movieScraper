@@ -7,12 +7,12 @@ from apps.movies.models import Movie, Actor
 # This should be done using some fixture or recipe...
 class SetupMixin:
     def setUp(self):
-        self.movie1 = Movie.objects.create(name='LORD of the rings')
-        self.movie2 = Movie.objects.create(name='Input ord')
-        self.movie3 = Movie.objects.create(name='Matrix revolutions')
-        self.actor1 = Actor.objects.create(name='LordDicaprio')
-        self.actor2 = Actor.objects.create(name='Karel Cech')
-        self.actor3 = Actor.objects.create(name='No Name')
+        self.movie1 = Movie.objects.create(name='LORD of the rings', unicode_name='lord of the rings')
+        self.movie2 = Movie.objects.create(name='Input OŘD', unicode_name='input ord')
+        self.movie3 = Movie.objects.create(name='Matrix revolutions', unicode_name='matrix revolutions')
+        self.actor1 = Actor.objects.create(name='LórdDicaprio', unicode_name='lorddicaprio')
+        self.actor2 = Actor.objects.create(name='Karel Čech', unicode_name='karel cech')
+        self.actor3 = Actor.objects.create(name='No Name', unicode_name='no name')
         self.movie1.actors.add(self.actor1, self.actor2)
 
 
@@ -23,7 +23,7 @@ class SearchFormViewTest(SetupMixin, TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_search(self):
-        response = self.client.get(reverse('movies:search', kwargs={'search': 'ord'}))
+        response = self.client.get(reverse('movies:search', kwargs={'search': 'óřď'}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.movie1.name)
         self.assertContains(response, self.movie2.name)

@@ -12,14 +12,12 @@ class CsfdScraperTest(TestCase):
         self.assertEqual(result.actors, ['Tim Robbins', 'Morgan Freeman', 'Bob Gunton', 'William Sadler', 'Clancy Brown',
                                          'Gil Bellows', 'Mark Rolston', 'James Whitmore', 'Jeffrey DeMunn'])
 
-    def test_get_top_movies(self):
-        result = CsfdScraper.get_top_movies(2)
-        self.assertEqual(result[0].name, 'Vykoupení z věznice Shawshank')
-        self.assertEqual(result[0].actors, ['Tim Robbins', 'Morgan Freeman', 'Bob Gunton', 'William Sadler', 'Clancy Brown',
-                                         'Gil Bellows', 'Mark Rolston', 'James Whitmore', 'Jeffrey DeMunn'])
+    def test_get_top_movie_links(self):
+        result = CsfdScraper.get_top_movie_links(250)
+        self.assertEqual(len(result), 250)
+        self.assertEqual(result[0], "https://www.csfd.cz/film/2294-vykoupeni-z-veznice-shawshank/")
+        self.assertEqual(result[1], "https://www.csfd.cz/film/10135-forrest-gump/")
 
-        self.assertEqual(result[1].name, 'Forrest Gump')
-        self.assertEqual(result[1].actors, ['Tom Hanks', 'Robin Wright', 'Gary Sinise', 'Mykelti Williamson', 'Sally Field',
-                                            'Haley Joel Osment', 'Peter Dobson', 'Siobhan Fallon Hogan', 'Hanna Hall', 'Brett Rice'])
+    def test_get_top_movie_links_too_big_count(self):
+        self.assertRaises(AssertionError, CsfdScraper.get_top_movie_links, CsfdScraper.MAX_SIZE+1)
 
-        self.assertEqual(len(result), 2)
