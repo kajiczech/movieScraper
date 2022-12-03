@@ -1,3 +1,5 @@
+from unittest import skip
+
 from django.test import TestCase
 
 from libs.scrapers.csfd import CsfdScraper
@@ -20,6 +22,7 @@ class CsfdScraperTest(TestCase):
         self.assertEqual(result[1], "https://www.csfd.cz/film/10135-forrest-gump/")
         self.assertEqual(result[299], "https://www.csfd.cz/film/26204-jestli-se-rozzlobime-budeme-zli/")
 
+    @skip
     def testget_top_movie_links_max(self):
         result = CsfdScraper.get_top_movie_links(1000)
         self.assertEqual(len(result), 1000)

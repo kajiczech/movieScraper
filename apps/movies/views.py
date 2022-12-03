@@ -1,7 +1,5 @@
-from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.views import View
 from django.views.generic import DetailView
 from text_unidecode import unidecode
 
