@@ -24,6 +24,7 @@ class CsfdScraper:
     MAX_SIZE = 1000  # There are only 1000 top films on csfd now
     movie_link_class = "film-title-name"
     movie_year_class = "origin"
+    more_actors_class = "more-member-1"
 
     class EmptyPageError(Exception):
         pass
@@ -65,7 +66,17 @@ class CsfdScraper:
         movie_page_response = requests.get(link, headers=BROWSER_LIKE_HEADERS)
         movie_soup = BeautifulSoup(movie_page_response.text, 'html.parser')
         acting_element = movie_soup.find('h4', string=cls.actor_header_text).parent
+
         name = movie_soup.find('h1').text.strip()
-        actor_names = [actor.text for actor in acting_element.find_all('a', recursive=False)]
+
+        actor_names = cls._get_actor_names(acting_element)
+        if more_acting_element := acting_element.find(attrs={"class": cls.more_actors_class}):
+            actor_names += cls._get_actor_names(more_acting_element)
+
         year = int(movie_soup.find('div', attrs={"class": cls.movie_year_class}).find('span').text.replace(', ', ''))
+
         return MovieData(name=name, year=year, actors=actor_names)
+
+    @classmethod
+    def _get_actor_names(cls, acting_element):
+        return [actor.text for actor in acting_element.find_all('a', recursive=False)]
