@@ -11,6 +11,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('--movie_count', type=int, default=300, help=f"How many movies we want to fetch - maximum is {CsfdScraper.MAX_SIZE}")
+        parser.add_argument('--offset', type=int, default=0, help='From what movie we should start fetching - 1')
 
     def handle(self, *args, **options):
         assert options['movie_count'] <= CsfdScraper.MAX_SIZE
@@ -24,8 +25,14 @@ class Command(BaseCommand):
                     unicode_name=unidecode(movie_data.name).lower(),
                     year=movie_data.year
                 )
-                for actor_name in movie_data.actors:
-                    actor, _ = Actor.objects.get_or_create(name=actor_name, unicode_name=unidecode(actor_name).lower())
+                for actor_link in movie_data.actor_links:
+                    actor_data = CsfdScraper.get_actor_data(actor_link)
+                    actor, _ = Actor.objects.get_or_create(
+                        name=actor_data.name,
+                        unicode_name=unidecode(actor_data.name).lower(),
+                        city_of_birth=actor_data.city_of_birth,
+                        date_of_birth=actor_data.date_of_birth)
+
                     actor.movies.add(movie)
             print(f'{i+1}.loaded: {movie_data}')
         print(f"Currently {Movie.objects.count()} movies in db")
