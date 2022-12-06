@@ -7,7 +7,22 @@ import requests
 from bs4 import BeautifulSoup, element
 
 # Need to use these headers to avoid 429 error - too many requests on CSFD
-BROWSER_LIKE_HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2172.95 Safari/537.36'}
+BROWSER_LIKE_HEADERS = {
+    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+    'accept-encoding': 'gzip, deflate, br',
+    'accept-language': 'en-US,en;q=0.9,cs-CZ;q=0.8,cs;q=0.7',
+    'cache-control': 'max-age=0',
+    'cookie': 'mid=81845988824968206; _nss=1; _ga=GA1.1.500757622.1669999842; __gfp_64b=AemAoohhUjAXah.6_s63E_FZ1RvLqbU5TdRci51cUjX.67|1669999842; aam_td_cpex_network=1669999842106; aam_net_ui=4976016744; aam_net_ts=1647118032; AMCVS_2C2555935C79EB590A495E90%40AdobeOrg=1; aam_cpexsas=seg%3D25118985; aam_uuid=87538215106717169550285412411409357271; __gads=ID=9d437fc0b74c6667-2247bb3007d8003b:T=1669999846:RT=1669999846:S=ALNI_MblzR9dBY5XM9rfgTsIGvnB3ishzQ; AMCV_2C2555935C79EB590A495E90%40AdobeOrg=-1124106680%7CMCIDTS%7C19332%7CMCMID%7C87295171710385868010264400411772161085%7CMCAAMLH-1670861700%7C6%7CMCAAMB-1670861700%7CRKhpRz8krg2tLO6pguXWp5olkAcUniQYPHaMWWgdJ3xzPWQmdj0y%7CMCOPTOUT-1670264100s%7CNONE%7CvVersion%7C5.2.0; __gpi=UID=00000b8c00f953cc:T=1669999846:RT=1670330362:S=ALNI_Mbww9Qolit5r7EwJYr9uyETuoTFKg; PHPSESSID=2lbo5sn07d3pb9gjajnq8feqr3; _tz_d=RXVyb3BlL1ByYWd1ZToyMTMuMTUxLjg5LjE1NA%3D%3D; hdyuz48=84; _ga_C98FX2HV16=GS1.1.1670340466.10.0.1670340778.59.0.0; aam_last=1670340778783; cto_bundle=10vzuF81OVdFUkJJTlYwMlVtUk5yV2g1bTZQUGVaVElmOVAlMkJqckxkVEZzeDlvZTdGa1UxMFY5M3VLdFVHanJLdzlHbkhhTUFkdDJXeWd5UlY4akY4Vk1XR2g0NVFsRWk3OEVRUGJqam9iNm8zbEVnJTJGOG1MTEFYdzM2Q29ZUVQ4QyUyQkxQaiUyRkNMQ2RFMGJqVWk5Y2tzcGZ0S0g4ckw1WnlxJTJGaWZQME85NnA0M3ZpNDY0VzNNMnNlZDlySzFKeG5NcTVxbUt4',
+    'sec-ch-ua': '"Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"macOS"',
+    'sec-fetch-dest': 'document',
+    'sec-fetch-mode': 'navigate',
+    'sec-fetch-site': 'none',
+    'sec-fetch-user': '?1',
+    'upgrade-insecure-requests': '1',
+    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36',
+}
 
 
 @dataclasses.dataclass
