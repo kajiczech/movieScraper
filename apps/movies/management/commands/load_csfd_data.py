@@ -15,9 +15,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         assert options['movie_count'] <= CsfdScraper.MAX_SIZE
+        assert options['movie_count'] > options['offset']
 
+        movie_links = CsfdScraper.get_top_movie_links(options['movie_count'])[options['offset']:]
         # To speed things up, we could run this in parallel
-        for i, movie_link in enumerate(CsfdScraper.get_top_movie_links(options['movie_count'])):
+        for i, movie_link in enumerate(movie_links):
             with transaction.atomic():
                 movie_data = CsfdScraper.get_movie_data(movie_link)
                 movie, _ = Movie.objects.get_or_create(
